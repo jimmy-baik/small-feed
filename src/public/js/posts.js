@@ -554,7 +554,7 @@ function setUpNewInviteContentModal() {
         newUrlForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const url = document.getElementById('url').value;
+            const url = document.getElementById('newContentUrlInput').value;
             
             try {
                 const response = await fetch(`/api/feeds/${feedSlug}/url`, {
@@ -566,6 +566,12 @@ function setUpNewInviteContentModal() {
                 });
                 
                 if (response.ok || response.redirected) {
+                    try {
+                        newUrlForm.querySelector('#newContentUrlInput').value = '';
+                    } catch (error) {
+                        console.error('input 필드 초기화 실패:', error);
+                    }
+                    
                     newUrlModalController.closeModal();
                     showToast('컨텐츠 추가 성공!\n잠시 후 피드에 나타나요.', 3000, 'success');
                 } else {
