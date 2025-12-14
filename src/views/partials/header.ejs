@@ -13,9 +13,8 @@
                 <circle cx="11" cy="11" r="8"></circle>
                 <path d="m21 21-4.35-4.35"></path>
             </svg>
-            <form method="GET" action="/feeds" style="display: contents;">
+            <form method="GET" action="/feeds/<%= feedSlug %>" style="display: contents;">
                 <input type="text" name="q" class="search-input" placeholder="검색" />
-                <input type="hidden" name="feed" value="${this.feedSlug}" />
             </form>
         </div>
         <div class="header-right">
