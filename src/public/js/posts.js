@@ -502,7 +502,6 @@ function setUpNewFeedModal() {
                 });
                 
                 if (response.ok) {
-                    modalController.closeModal();
                     window.location.reload();
                 } else {
                     const error = await response.json();
