@@ -1956,6 +1956,7 @@ body.modal-open {
     pointer-events: none;
     max-width: 90%;
     text-align: center;
+    white-space: pre-line;
 }
 
 .toast-notification.success {
