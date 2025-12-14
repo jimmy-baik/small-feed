@@ -568,7 +568,7 @@ function setUpNewInviteContentModal() {
                 
                 if (response.ok || response.redirected) {
                     newUrlModalController.closeModal();
-                    showToast('컨텐츠 추가 성공!<br>잠시 후 피드에 나타나요.', 3000, 'success');
+                    showToast('컨텐츠 추가 성공!\n잠시 후 피드에 나타나요.', 3000, 'success');
                 } else {
                     // JSON 에러 응답 시도
                     try {
