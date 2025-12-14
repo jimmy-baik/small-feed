@@ -36,8 +36,10 @@ router.post('/',
         const title = String(req.body.title);
         const slug = generateRandomString(10); // 10자리의 랜덤 문자열을 생성해서 url slug로 사용한다
         const feed = await feedsRepository.createFeed(title, slug, userId);
-        // 피드 목록으로 리다이렉트
-        res.redirect(`/feeds`);
+
+        return res.status(201).json({
+            feedSlug: feed.slug
+        });
     }
     catch (err) {
         next(err);
