@@ -138,15 +138,46 @@ async function extractYoutubeTranscript(videoId: string): Promise<ExtractedConte
   };
 }
 
-async function summarizeArticleContent(content: string): Promise<string> {
-  const response = await llmClient.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: `이 글에서 독자가 기억해야 할 제일 중요한 요점을 짧은 3문장으로 요약해줘: ${content}`,
-  });
-  if (!response.text || response.text === undefined) {
-    throw new Error('요약에 실패했습니다.');
+/**
+ * await 가능한 비동기 sleep 편의 함수
+ * @param milliseconds 대기할 시간 (밀리초)
+ * @returns Promise<void>
+ */
+async function asyncSleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function summarizeArticleContent(content: string, maxRetries:number = 7): Promise<string> {
+  let retryCount = 0;
+  let retryDelay = 10 * 1000; // 최초 실패시 10초 후 재시도. 연속 실패시 2배씩 증가하며 maxRetries 만큼 재시도한다.
+
+  while (retryCount < maxRetries) {
+    try {
+      const response = await llmClient.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `이 글에서 독자가 기억해야 할 제일 중요한 요점을 짧은 3문장으로 요약해줘: ${content}`,
+      });
+
+      if (!response.text || response.text === undefined) {
+        throw new Error('요약에 실패했습니다.');
+      }
+
+      return response.text;
+
+    } catch (error) {
+      retryCount += 1;
+      
+      if (retryCount >= maxRetries) {
+        throw error;
+      }
+
+      console.log(`요약 생성 실패 (${retryCount}/${maxRetries}) 다음 시도까지 ${retryDelay}ms 대기... - ${error}`);
+      await asyncSleep(retryDelay);
+      retryDelay *= 2;
+    }
   }
-  return response.text;
+
+  throw new Error('요약에 실패했습니다.');
 }
 
 
